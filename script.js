@@ -1,30 +1,25 @@
-const makeList = document.getElementById("makeList");
-let make = makeList.value;
+const makeListEle = document.getElementById("makeList");
+let make = makeListEle.value;
 
-makeList.addEventListener("change", () => {
+makeList.addEventListener("change", async () => {
     make = makeList.value;
-    getModels(make);
+    await getModels(make);
 });
 
-function getModels() {
-    //  https://vpic.nhtsa.dot.gov/api/Home/Index/LanguageExamples
-    // get the list of models for the selected make
-    fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/${make}?format=json`)
-        .then((response) => response.json())
-        .then((data) => {
-            appendModels(data.Results);
-        });
+async function getModels() {
+    const response = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/${make}?format=json`);
+    const data = await response.json();
+    await appendModels(data.Results);
+
 }
 
-function appendModels(models) {
-    const uiElem = document.getElementById("modelList");
-    uiElem.innerHTML = "";
-    for (const model of models) {
+async function appendModels(models) {
+    const modelListEle = document.getElementById("modelList");
+    modelListEle.innerHTML = "";
+    for (let model of models) {
         const liElem = document.createElement("li");
         liElem.innerText = model.Model_Name;
-        uiElem.appendChild(liElem);
+        modelListEle.appendChild(liElem);
         console.log(model.Model_Name);
     }
 }
-
-
